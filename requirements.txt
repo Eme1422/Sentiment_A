@@ -5,4 +5,3 @@ textblob
 deep-translator
 pillow
 pandas
-wordcloud

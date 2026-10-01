@@ -3,6 +3,7 @@ streamlit-lottie
 requests
 textblob
 googletrans==4.0.0-rc1
+httpx
 pillow
 pandas
 wordcloud

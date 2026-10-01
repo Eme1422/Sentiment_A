@@ -11,25 +11,22 @@ st.set_page_config(
     page_title="Análisis de Sentimiento", page_icon="😊", layout="centered"
 )
 
-# Función helper para cargar animaciones Lottie vía URL
+# Función para cargar animaciones Lottie desde URL
 def load_lottieurl(url: str):
     r = requests.get(url)
     if r.status_code != 200:
         return None
     return r.json()
 
-# URLs de animaciones Lottie (puedes descargarlas e importarlas localmente si lo prefieres)
-LOTTIE_POSITIVE = "https://assets2.lottiefiles.com/packages/lf20_tpb93910.json"  # Carita feliz / fiesta
-LOTTIE_NEGATIVE = "https://assets9.lottiefiles.com/packages/lf20_9xR83L.json"  # Carita triste / nube
-LOTTIE_NEUTRAL = "https://assets10.lottiefiles.com/packages/lf20_f333a92p.json"  # Carita pensando / neutral
+# URLs de las animaciones Lottie
+LOTTIE_POSITIVE = "https://assets2.lottiefiles.com/packages/lf20_tpb93910.json"
+LOTTIE_NEGATIVE = "https://assets9.lottiefiles.com/packages/lf20_9xR83L.json"
+LOTTIE_NEUTRAL = "https://assets10.lottiefiles.com/packages/lf20_f333a92p.json"
 
 lottie_pos = load_lottieurl(LOTTIE_POSITIVE)
 lottie_neg = load_lottieurl(LOTTIE_NEGATIVE)
 lottie_neu = load_lottieurl(LOTTIE_NEUTRAL)
 
-translator = Translator()
-
-# Título e imagen de cabecera
 st.title("Análisis de Sentimiento con Interacción 🎭")
 
 try:
@@ -40,7 +37,7 @@ except FileNotFoundError:
 
 st.subheader("Por favor escribe en el campo de texto la frase que deseas analizar")
 
-# Barra lateral informativa
+# Barra lateral
 with st.sidebar:
     st.subheader("Polaridad y Subjetividad")
     st.markdown(
@@ -53,14 +50,13 @@ with st.sidebar:
     """
     )
 
-# Área principal de entrada e interacción
-text = st.text_area("Escribe tu frase aquí:", placeholder="Ejemplo: ¡Hoy es un excelente día para aprender Python!")
+# Campo de texto e interacción
+text = st.text_area("Escribe tu frase aquí:", placeholder="Ejemplo: ¡Hoy es un excelente día para aprender!")
 
 if st.button("Analizar Sentimiento", type="primary"):
     if text.strip():
-        # Traducción y procesamiento de texto
-        translation = translator.translate(text, src="es", dest="en")
-        trans_text = translation.text
+        # Traducción con deep-translator
+        trans_text = GoogleTranslator(source="auto", target="en").translate(text)
         blob = TextBlob(trans_text)
 
         polarity = round(blob.sentiment.polarity, 2)
@@ -69,12 +65,10 @@ if st.button("Analizar Sentimiento", type="primary"):
         st.markdown("---")
         st.subheader("Resultados del Análisis")
 
-        # Métricas principales
         col1, col2 = st.columns(2)
         col1.metric("Polaridad", polarity)
         col2.metric("Subjetividad", subjectivity)
 
-        # Lógica de clasificación e interacción
         if polarity > 0.05:
             st.success("¡Es un sentimiento **Positivo**! 😊")
             st.write("¡Sigue propagando esa buena energía!")
@@ -94,4 +88,3 @@ if st.button("Analizar Sentimiento", type="primary"):
                 st_lottie(lottie_neu, height=200, key="neutral_anim")
     else:
         st.warning("Por favor ingresa un texto válido antes de analizar.")
-      

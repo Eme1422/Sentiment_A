@@ -1,7 +1,7 @@
 import pandas as pd
 import requests
 import streamlit as st
-from googletrans import Translator
+from deep_translator import GoogleTranslator
 from PIL import Image
 from streamlit_lottie import st_lottie
 from textblob import TextBlob

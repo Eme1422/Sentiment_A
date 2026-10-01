@@ -88,3 +88,4 @@ if st.button("Analizar Sentimiento", type="primary"):
                 st_lottie(lottie_neu, height=200, key="neutral_anim")
     else:
         st.warning("Por favor ingresa un texto válido antes de analizar.")
+        

@@ -2,7 +2,6 @@ import json
 import pandas as pd
 import streamlit as st
 from deep_translator import GoogleTranslator
-from PIL import Image
 from streamlit_lottie import st_lottie
 from textblob import TextBlob
 
@@ -12,33 +11,25 @@ st.set_page_config(
 )
 
 
-# Función para cargar la animación local Lottie (.json o .lottie)
+# Función para cargar la animación Lottie local (.json o .lottie)
 def load_lottie_file(filepath: str):
     try:
         with open(filepath, "r", encoding="utf-8") as source:
             return json.load(source)
-    except FileNotFoundError:
-        return None
     except Exception:
-        # En caso de que el archivo .lottie no sea un JSON directo
         return None
 
 
-# Cargar tu animación 'Moods.lottie'
+# Cargar la animación en lugar de la imagen estática
 lottie_animation = load_lottie_file("Moods.lottie")
 
-st.title("Análisis de Sentimiento con Interacción 🎭")
+st.title("Análisis de Sentimiento")
 
-# Mostrar la animación principal arriba
+# Se muestra la animación Lottie donde antes estaba la imagen
 if lottie_animation:
-    st_lottie(lottie_animation, height=250, key="moods_anim")
-
-# Intentar cargar la imagen de encabezado si existe
-try:
-    image = Image.open("emoticones.jpg")
-    st.image(image, use_container_width=True)
-except FileNotFoundError:
-    pass
+    st_lottie(lottie_animation, height=300, key="cabecera_animada")
+else:
+    st.info("Carga el archivo 'Moods.lottie' en GitHub para ver la animación.")
 
 st.subheader("Por favor escribe en el campo de texto la frase que deseas analizar")
 
@@ -55,7 +46,7 @@ with st.sidebar:
     """
     )
 
-# Área de entrada de texto
+# Campo de entrada de texto
 text = st.text_area(
     "Escribe tu frase aquí:",
     placeholder="Ejemplo: ¡Hoy es un excelente día para aprender!",
@@ -63,7 +54,7 @@ text = st.text_area(
 
 if st.button("Analizar Sentimiento", type="primary"):
     if text.strip():
-        # Traducción con deep-translator (evita errores en la nube)
+        # Traducción
         trans_text = GoogleTranslator(source="auto", target="en").translate(text)
         blob = TextBlob(trans_text)
 
@@ -77,18 +68,17 @@ if st.button("Analizar Sentimiento", type="primary"):
         col1.metric("Polaridad", polarity)
         col2.metric("Subjetividad", subjectivity)
 
-        # Respuestas interactivas según el análisis
+        # Respuesta e interacción según el sentimiento
         if polarity > 0.05:
             st.success("¡Es un sentimiento **Positivo**! 😊")
-            st.write("¡Excelente! El mensaje transmite una buena vibra.")
+            st.write("¡Sigue propagando esa buena energía!")
 
         elif polarity < -0.05:
             st.error("Es un sentimiento **Negativo** 😔")
-            st.write("El mensaje contiene una carga negativa o crítica.")
+            st.write("Parece un comentario amargo.")
 
         else:
             st.info("Es un sentimiento **Neutral** 😐")
-            st.write("Es un mensaje informativo o sin sesgo emocional.")
+            st.write("Un mensaje objetivo y neutral.")
     else:
         st.warning("Por favor ingresa un texto válido antes de analizar.")
-        
